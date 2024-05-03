@@ -265,7 +265,7 @@ func newCommitPipeline(env commitEnv) *commitPipeline {
 		// NB: the commit concurrency is one less than SyncConcurrency because we
 		// have to allow one "slot" for a concurrent WAL rotation which will close
 		// and sync the WAL.
-		commitQueueSem: make(chan struct{}, record.SyncConcurrency-1),
+		commitQueueSem: make(chan struct{}, 1),
 		logSyncQSem:    make(chan struct{}, record.SyncConcurrency-1),
 		ingestSem:      make(chan struct{}, 1),
 	}

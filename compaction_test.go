@@ -3858,7 +3858,7 @@ func TestSharedObjectDeletePacing(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		err = d.DeleteRange([]byte(key(5)), []byte(key(9)), nil)
+		err = d.DeleteRange([]byte(key(5)), []byte(key(9)), nil, "")
 		if err == nil {
 			err = d.Compact([]byte(key(5)), []byte(key(9)), false)
 		}

@@ -262,7 +262,7 @@ type deleteRangeOp struct {
 
 func (o *deleteRangeOp) run(t *test, h historyRecorder) {
 	w := t.getWriter(o.writerID)
-	err := w.DeleteRange(o.start, o.end, t.writeOpts)
+	err := w.DeleteRange(o.start, o.end, t.writeOpts, "")
 	h.Recordf("%s // %v", o, err)
 }
 
@@ -590,7 +590,7 @@ func (o *ingestOp) collapseBatch(
 		for t := rangeDelIter.First(); t != nil; t = rangeDelIter.Next() {
 			// NB: We don't have to copy the key or value since we're reading from a
 			// batch which doesn't do prefix compression.
-			if err := collapsed.DeleteRange(t.Start, t.End, nil); err != nil {
+			if err := collapsed.DeleteRange(t.Start, t.End, nil, ""); err != nil {
 				return nil, err
 			}
 		}

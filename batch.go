@@ -882,7 +882,7 @@ func (b *Batch) SingleDeleteDeferred(keyLen int) *DeferredBatchOp {
 //
 // It is safe to modify the contents of the arguments after DeleteRange
 // returns.
-func (b *Batch) DeleteRange(start, end []byte, _ *WriteOptions) error {
+func (b *Batch) DeleteRange(start, end []byte, _ *WriteOptions, _ string) error {
 	deferredOp := b.DeleteRangeDeferred(len(start), len(end))
 	copy(deferredOp.Key, start)
 	copy(deferredOp.Value, end)

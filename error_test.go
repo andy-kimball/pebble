@@ -190,7 +190,7 @@ func TestRequireReadError(t *testing.T) {
 		require.NoError(t, d.Set(key2, value, nil))
 		require.NoError(t, d.Flush())
 		require.NoError(t, d.Compact(key1, key2, false))
-		require.NoError(t, d.DeleteRange(key1, key2, nil))
+		require.NoError(t, d.DeleteRange(key1, key2, nil, ""))
 		require.NoError(t, d.Set(key1, value, nil))
 		require.NoError(t, d.Flush())
 		if formatVersion < FormatSetWithDelete {
@@ -293,7 +293,7 @@ func TestCorruptReadError(t *testing.T) {
 		require.NoError(t, d.Set(key2, value, nil))
 		require.NoError(t, d.Flush())
 		require.NoError(t, d.Compact(key1, key2, false))
-		require.NoError(t, d.DeleteRange(key1, key2, nil))
+		require.NoError(t, d.DeleteRange(key1, key2, nil, ""))
 		require.NoError(t, d.Set(key1, value, nil))
 		require.NoError(t, d.Flush())
 		if formatVersion < FormatSetWithDelete {

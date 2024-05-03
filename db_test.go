@@ -1104,7 +1104,7 @@ func TestDBClosed(t *testing.T) {
 
 	require.True(t, errors.Is(catch(func() { _, _, _ = d.Get(nil) }), ErrClosed))
 	require.True(t, errors.Is(catch(func() { _ = d.Delete(nil, nil) }), ErrClosed))
-	require.True(t, errors.Is(catch(func() { _ = d.DeleteRange(nil, nil, nil) }), ErrClosed))
+	require.True(t, errors.Is(catch(func() { _ = d.DeleteRange(nil, nil, nil, "") }), ErrClosed))
 	require.True(t, errors.Is(catch(func() { _ = d.Ingest(nil) }), ErrClosed))
 	require.True(t, errors.Is(catch(func() { _ = d.LogData(nil, nil) }), ErrClosed))
 	require.True(t, errors.Is(catch(func() { _ = d.Merge(nil, nil, nil) }), ErrClosed))
@@ -1240,7 +1240,7 @@ func TestCloseCleanerRace(t *testing.T) {
 		// Ref the sstables so cannot be deleted.
 		it, _ := db.NewIter(nil)
 		require.NotNil(t, it)
-		require.NoError(t, db.DeleteRange([]byte("a"), []byte("b"), Sync))
+		require.NoError(t, db.DeleteRange([]byte("a"), []byte("b"), Sync, ""))
 		require.NoError(t, db.Compact([]byte("a"), []byte("b"), false))
 		// Only the iterator is keeping the sstables alive.
 		files, err := mem.List("/")

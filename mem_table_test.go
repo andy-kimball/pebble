@@ -358,7 +358,7 @@ func TestMemTableConcurrentDeleteRange(t *testing.T) {
 			end := ([]byte)(fmt.Sprintf("%03d", i+1))
 			for j := 0; j < 100; j++ {
 				b := newBatch(nil)
-				b.DeleteRange(start, end, nil)
+				b.DeleteRange(start, end, nil, "")
 				n := seqNum.Add(1) - 1
 				require.NoError(t, m.apply(b, n))
 				b.release()

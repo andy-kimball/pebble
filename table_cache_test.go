@@ -267,7 +267,7 @@ func TestVirtualReadsWiring(t *testing.T) {
 	// all of the table cache iterator functions are utilized.
 	require.NoError(t, b.Set([]byte{'a'}, []byte{'a'}, nil))
 	require.NoError(t, b.Set([]byte{'d'}, []byte{'d'}, nil))
-	require.NoError(t, b.DeleteRange([]byte{'c'}, []byte{'e'}, nil))
+	require.NoError(t, b.DeleteRange([]byte{'c'}, []byte{'e'}, nil, ""))
 	require.NoError(t, b.Set([]byte{'f'}, []byte{'f'}, nil))
 	require.NoError(t, b.RangeKeySet([]byte{'f'}, []byte{'k'}, nil, []byte{'c'}, nil))
 	require.NoError(t, b.RangeKeyUnset([]byte{'j'}, []byte{'k'}, nil, nil))
@@ -480,7 +480,7 @@ func TestSharedTableCacheUseAfterOneFree(t *testing.T) {
 	end := []byte("d")
 	require.NoError(t, db2.Set(start, nil, nil))
 	require.NoError(t, db2.Flush())
-	require.NoError(t, db2.DeleteRange(start, end, nil))
+	require.NoError(t, db2.DeleteRange(start, end, nil, ""))
 	require.NoError(t, db2.Compact(start, end, false))
 }
 
@@ -518,7 +518,7 @@ func TestSharedTableCacheUsable(t *testing.T) {
 	end := []byte("z")
 	require.NoError(t, db1.Set(start, nil, nil))
 	require.NoError(t, db1.Flush())
-	require.NoError(t, db1.DeleteRange(start, end, nil))
+	require.NoError(t, db1.DeleteRange(start, end, nil, ""))
 	require.NoError(t, db1.Compact(start, end, false))
 
 	start = []byte("x")
@@ -527,7 +527,7 @@ func TestSharedTableCacheUsable(t *testing.T) {
 	require.NoError(t, db2.Flush())
 	require.NoError(t, db2.Set(start, []byte{'a'}, nil))
 	require.NoError(t, db2.Flush())
-	require.NoError(t, db2.DeleteRange(start, end, nil))
+	require.NoError(t, db2.DeleteRange(start, end, nil, ""))
 	require.NoError(t, db2.Compact(start, end, false))
 }
 
@@ -570,7 +570,7 @@ func TestSharedTableConcurrent(t *testing.T) {
 			end := []byte("z")
 			require.NoError(t, db.Set(start, nil, nil))
 			require.NoError(t, db.Flush())
-			require.NoError(t, db.DeleteRange(start, end, nil))
+			require.NoError(t, db.DeleteRange(start, end, nil, ""))
 			require.NoError(t, db.Compact(start, end, false))
 		}
 		wg.Done()
@@ -1052,7 +1052,7 @@ func TestTableCacheEvictClose(t *testing.T) {
 	end := []byte("z")
 	require.NoError(t, db.Set(start, nil, nil))
 	require.NoError(t, db.Flush())
-	require.NoError(t, db.DeleteRange(start, end, nil))
+	require.NoError(t, db.DeleteRange(start, end, nil, ""))
 	require.NoError(t, db.Compact(start, end, false))
 	require.NoError(t, db.Close())
 	close(errs)

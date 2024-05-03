@@ -269,7 +269,7 @@ func TestSnapshotRangeDeletionStress(t *testing.T) {
 		// Now we delete some of the keyspace through a DeleteRange. We delete from
 		// the middle of the keyspace outwards. The keyspace is made of 2*runs
 		// sections, and we delete an additional two of these sections per run.
-		err := d.DeleteRange(mkkey(middleKey-runs*r), mkkey(middleKey+runs*r), nil)
+		err := d.DeleteRange(mkkey(middleKey-runs*r), mkkey(middleKey+runs*r), nil, "")
 		require.NoError(t, err)
 
 		snapshots = append(snapshots, d.NewSnapshot())

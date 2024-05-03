@@ -97,7 +97,7 @@ func TestManualFlush(t *testing.T) {
 func TestFlushDelRangeEmptyKey(t *testing.T) {
 	d, err := Open("", &Options{FS: vfs.NewMem()})
 	require.NoError(t, err)
-	require.NoError(t, d.DeleteRange([]byte{}, []byte("z"), nil))
+	require.NoError(t, d.DeleteRange([]byte{}, []byte("z"), nil, ""))
 	require.NoError(t, d.Flush())
 	require.NoError(t, d.Close())
 }

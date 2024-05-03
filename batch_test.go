@@ -125,7 +125,7 @@ func testBatch(t *testing.T, size int) {
 		case InternalKeyKindSingleDelete:
 			_ = b.SingleDelete([]byte(tc.key), nil)
 		case InternalKeyKindRangeDelete:
-			_ = b.DeleteRange([]byte(tc.key), []byte(tc.value), nil)
+			_ = b.DeleteRange([]byte(tc.key), []byte(tc.value), nil, "")
 		case InternalKeyKindLogData:
 			_ = b.LogData([]byte(tc.key), nil)
 		case InternalKeyKindRangeKeyDelete:
@@ -268,7 +268,7 @@ func testBatchEmpty(t *testing.T, size int) {
 		func(b *Batch) error { return b.Set(nil, nil, nil) },
 		func(b *Batch) error { return b.Merge(nil, nil, nil) },
 		func(b *Batch) error { return b.Delete(nil, nil) },
-		func(b *Batch) error { return b.DeleteRange(nil, nil, nil) },
+		func(b *Batch) error { return b.DeleteRange(nil, nil, nil, "") },
 		func(b *Batch) error { return b.LogData(nil, nil) },
 		func(b *Batch) error { return b.RangeKeySet(nil, nil, nil, nil, nil) },
 		func(b *Batch) error { return b.RangeKeyUnset(nil, nil, nil, nil) },
@@ -433,7 +433,7 @@ func TestIndexedBatchReset(t *testing.T) {
 	end := "end-key"
 	key := "test-key"
 	value := "test-value"
-	b.DeleteRange([]byte(start), []byte(end), nil)
+	b.DeleteRange([]byte(start), []byte(end), nil, "")
 	b.Set([]byte(key), []byte(value), nil)
 	require.NoError(t, b.
 		RangeKeySet([]byte(start), []byte(end), []byte("suffix"), []byte(value), nil))
@@ -490,7 +490,7 @@ func TestIndexedBatchReset(t *testing.T) {
 	require.True(t, contains(b, key, value))
 
 	// Use range delete to delete the above inserted key-value pair.
-	b.DeleteRange([]byte(key), []byte(value), nil)
+	b.DeleteRange([]byte(key), []byte(value), nil, "")
 	require.NotNil(t, b.rangeDelIndex)
 	require.Equal(t, 1, indexCount(b.rangeDelIndex))
 	require.Equal(t, 0, count(b))
@@ -620,7 +620,7 @@ func TestIndexedBatch_GlobalVisibility(t *testing.T) {
 	// Mutate the database's committed state.
 	mut := newBatch(d)
 	require.NoError(t, mut.Set([]byte("bar"), []byte("bar"), nil))
-	require.NoError(t, mut.DeleteRange([]byte("e"), []byte("g"), nil))
+	require.NoError(t, mut.DeleteRange([]byte("e"), []byte("g"), nil, ""))
 	require.NoError(t, mut.RangeKeySet([]byte("a"), []byte("c"), []byte("@1"), []byte("v"), nil))
 	require.NoError(t, mut.Commit(nil))
 
@@ -1044,7 +1044,7 @@ func TestFlushableBatch(t *testing.T) {
 				case InternalKeyKindMerge:
 					require.NoError(t, batch.Merge(ikey.UserKey, value, nil))
 				case InternalKeyKindRangeDelete:
-					require.NoError(t, batch.DeleteRange(ikey.UserKey, value, nil))
+					require.NoError(t, batch.DeleteRange(ikey.UserKey, value, nil, ""))
 				case InternalKeyKindRangeKeyDelete:
 					require.NoError(t, batch.RangeKeyDelete(ikey.UserKey, value, nil))
 				case InternalKeyKindRangeKeySet:
@@ -1606,7 +1606,7 @@ func TestBatchSpanCaching(t *testing.T) {
 			// Write a new range deletion and range key.
 			start := testkeys.Key(ks, nextWriteKey)
 			end := append(start, 0x00)
-			require.NoError(t, b.DeleteRange(start, end, nil))
+			require.NoError(t, b.DeleteRange(start, end, nil, ""))
 			require.NoError(t, b.RangeKeySet(start, end, nil, []byte("foo"), nil))
 			nextWriteKey++
 		case p < .55: /* 45 % */

@@ -105,11 +105,11 @@ func TestFlushDelay(t *testing.T) {
 	// trigger their respective flush delays.
 	cases := []func(){
 		func() {
-			require.NoError(t, d.DeleteRange([]byte("a"), []byte("z"), nil))
+			require.NoError(t, d.DeleteRange([]byte("a"), []byte("z"), nil, ""))
 		},
 		func() {
 			b := d.NewBatch()
-			require.NoError(t, b.DeleteRange([]byte("a"), []byte("z"), nil))
+			require.NoError(t, b.DeleteRange([]byte("a"), []byte("z"), nil, ""))
 			require.NoError(t, b.Commit(nil))
 		},
 		func() {
@@ -123,7 +123,7 @@ func TestFlushDelay(t *testing.T) {
 		func() {
 			b := d.NewBatch()
 			b2 := d.NewBatch()
-			require.NoError(t, b.DeleteRange([]byte("a"), []byte("z"), nil))
+			require.NoError(t, b.DeleteRange([]byte("a"), []byte("z"), nil, ""))
 			require.NoError(t, b2.SetRepr(b.Repr()))
 			require.NoError(t, b2.Commit(nil))
 			require.NoError(t, b.Close())
@@ -131,7 +131,7 @@ func TestFlushDelay(t *testing.T) {
 		func() {
 			b := d.NewBatch()
 			b2 := d.NewBatch()
-			require.NoError(t, b.DeleteRange([]byte("a"), []byte("z"), nil))
+			require.NoError(t, b.DeleteRange([]byte("a"), []byte("z"), nil, ""))
 			require.NoError(t, b2.Apply(b, nil))
 			require.NoError(t, b2.Commit(nil))
 			require.NoError(t, b.Close())
@@ -220,7 +220,7 @@ func TestFlushDelayStress(t *testing.T) {
 					case 0:
 						randStr(k1[:], rng)
 						randStr(k2[:], rng)
-						require.NoError(t, d.DeleteRange(k1[:], k2[:], nil))
+						require.NoError(t, d.DeleteRange(k1[:], k2[:], nil, ""))
 					case 1:
 						randStr(k1[:], rng)
 						randStr(k2[:], rng)
@@ -291,7 +291,7 @@ func TestRangeDelCompactionTruncation(t *testing.T) {
 
 		snap2 := d.NewSnapshot()
 		defer snap2.Close()
-		require.NoError(t, d.DeleteRange([]byte("a"), []byte("d"), nil))
+		require.NoError(t, d.DeleteRange([]byte("a"), []byte("d"), nil, ""))
 
 		// Compact to produce the L1 tables.
 		require.NoError(t, d.Compact([]byte("c"), []byte("c\x00"), false))
@@ -441,7 +441,7 @@ func TestRangeDelCompactionTruncation2(t *testing.T) {
 	require.NoError(t, d.Set([]byte("b"), bytes.Repeat([]byte("c"), 100), nil))
 	snap2 := d.NewSnapshot()
 	defer snap2.Close()
-	require.NoError(t, d.DeleteRange([]byte("a"), []byte("d"), nil))
+	require.NoError(t, d.DeleteRange([]byte("a"), []byte("d"), nil, ""))
 
 	// Compact to produce the L1 tables.
 	require.NoError(t, d.Compact([]byte("b"), []byte("b\x00"), false))
@@ -507,7 +507,7 @@ func TestRangeDelCompactionTruncation3(t *testing.T) {
 	snap2 := d.NewSnapshot()
 	defer snap2.Close()
 
-	require.NoError(t, d.DeleteRange([]byte("a"), []byte("d"), nil))
+	require.NoError(t, d.DeleteRange([]byte("a"), []byte("d"), nil, ""))
 	snap3 := d.NewSnapshot()
 	defer snap3.Close()
 
@@ -627,7 +627,7 @@ func benchmarkRangeDelIterate(b *testing.B, entries, deleted int, snapshotCompac
 	// Create a range tombstone that deletes most (or all) of those entries.
 	from := makeKey(0)
 	to := makeKey(deleted)
-	if err := d.DeleteRange(from, to, nil); err != nil {
+	if err := d.DeleteRange(from, to, nil, ""); err != nil {
 		b.Fatal(err)
 	}
 

@@ -532,7 +532,7 @@ func TestPebblev1MigrationRace(t *testing.T) {
 			}
 			startKey := testkeys.Key(ks, startIndex)
 
-			require.NoError(t, d.DeleteRange(startKey, endKey, nil))
+			require.NoError(t, d.DeleteRange(startKey, endKey, nil, ""))
 			_, err := d.AsyncFlush()
 			require.NoError(t, err)
 		}

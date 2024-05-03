@@ -1093,7 +1093,7 @@ func loadFlushedSSTableKeys(
 		case base.InternalKeyKindSingleDelete:
 			err = b.SingleDelete(bufs.keys[i].UserKey, nil)
 		case base.InternalKeyKindRangeDelete:
-			err = b.DeleteRange(bufs.keys[i].UserKey, bufs.keys[i].value, nil)
+			err = b.DeleteRange(bufs.keys[i].UserKey, bufs.keys[i].value, nil, "")
 		case base.InternalKeyKindRangeKeySet, base.InternalKeyKindRangeKeyUnset, base.InternalKeyKindRangeKeyDelete:
 			s, err := rangekey.Decode(bufs.keys[i].InternalKey, bufs.keys[i].value, nil)
 			if err != nil {

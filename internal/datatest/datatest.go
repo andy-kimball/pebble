@@ -50,7 +50,7 @@ func DefineBatch(d *datadriven.TestData, b *pebble.Batch) error {
 			if len(parts) != 3 {
 				return errors.Errorf("%s expects 2 arguments", parts[0])
 			}
-			err = b.DeleteRange([]byte(parts[1]), []byte(parts[2]), nil)
+			err = b.DeleteRange([]byte(parts[1]), []byte(parts[2]), nil, "")
 		case "merge":
 			if len(parts) != 3 {
 				return errors.Errorf("%s expects 2 arguments", parts[0])

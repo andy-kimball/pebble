@@ -143,7 +143,7 @@ type Writer interface {
 	//
 	// It is safe to modify the contents of the arguments after DeleteRange
 	// returns.
-	DeleteRange(start, end []byte, o *WriteOptions) error
+	DeleteRange(start, end []byte, o *WriteOptions, s string) error
 
 	// LogData adds the specified to the batch. The data will be written to the
 	// WAL, but not added to memtables or sstables. Log data is never indexed,
@@ -673,9 +673,9 @@ func (d *DB) SingleDelete(key []byte, opts *WriteOptions) error {
 //
 // It is safe to modify the contents of the arguments after DeleteRange
 // returns.
-func (d *DB) DeleteRange(start, end []byte, opts *WriteOptions) error {
+func (d *DB) DeleteRange(start, end []byte, opts *WriteOptions, _ string) error {
 	b := newBatch(d)
-	_ = b.DeleteRange(start, end, opts)
+	_ = b.DeleteRange(start, end, opts, "")
 	if err := d.Apply(b, opts); err != nil {
 		return err
 	}
